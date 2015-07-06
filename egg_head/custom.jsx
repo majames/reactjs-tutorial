@@ -1,37 +1,60 @@
-var Button = React.createClass({
+var App = React.createClass({
+
+  render: function() {
+    return (
+      <div>
+        <Button txt="I am a button" />
+        <br />
+        <Label txt="I am a label" />
+      </div>
+    );
+  }
+
+});
+
+var Mixin = {
+  componentWillMount: function() {
+    console.log('mounting...');
+  },
 
   getInitialState: function() {
     return {
-      increasing: false
+      increment: 0
     };
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  updateIncrement: function() {
     this.setState({
-      increasing: nextProps.val > this.props.val
+      increment: this.state.increment + 1
     });
-  },
+  }
+};
 
-  shouldComponentUpdate: function(nextProps, nextState) {
-    return nextProps.val % 5 === 0;
-  },
+var Button = React.createClass({
+  mixins: [Mixin],
 
   render: function() {
-    console.log(this.state.increasing);
     return (
-      <button onClick={this.update}>{this.props.val}</button>
+      <button onClick={this.updateIncrement}>{this.props.txt} - {this.state.increment}</button>
+    );
+  }
+
+});
+
+var Label = React.createClass({
+  mixins: [Mixin],
+
+  render: function() {
+    return (
+      <label>{this.props.txt} - {this.state.increment}</label>
     );
   },
 
-  update: function() {
-    this.setProps({
-      val: this.props.val + 1
-    });
-  },
+  componentWillMount: function() {
+    setInterval(this.updateIncrement, 1000);
+  }
 
-  componentDidUpdate: function(prevProps, prevState) {
-    console.log(prevProps.val);
-  },
 });
 
-React.render(<Button val={0} />, document.body);
+
+React.render(<App />, document.body);
