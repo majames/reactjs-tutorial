@@ -1,60 +1,37 @@
 var Button = React.createClass({
+
   getInitialState: function() {
     return {
-      val: 0
+      increasing: false
     };
   },
 
-  componentWillMount: function() {
-    console.log('Mounting... Useful for setting up state each time component is mounted');
-
+  componentWillReceiveProps: function(nextProps) {
     this.setState({
-      multiplier: 2
+      increasing: nextProps.val > this.props.val
     });
   },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextProps.val % 5 === 0;
+  },
+
   render: function() {
-    console.log('rendering');
-    return <button onClick={this.update}>{this.state.val * this.state.multiplier}</button>;
-  },
-
-  componentDidMount: function() {
-    console.log('Mounted. Useful for starting timed events');
-    this.inc =setInterval(this.update, 1000);
-  },
-
-  componentWillUnmount: function() {
-    console.log('Unmounted. Useful for ensuring no state is set after component is unmounted');
-    clearInterval(this.inc);
-  },
-
-  update: function() {
-    this.setState({
-      val: this.state.val + 1
-    });
-  }
-});
-
-var App = React.createClass({
-  render: function() {
+    console.log(this.state.increasing);
     return (
-      <div>
-        <button onClick={this.mount}>Mount</button>
-        <button onClick={this.unmount}>Unmount</button>
-        <div id="target"></div>
-      </div>
+      <button onClick={this.update}>{this.props.val}</button>
     );
   },
 
-  mount: function() {
-    React.render(<Button />, document.getElementById('target'));
+  update: function() {
+    this.setProps({
+      val: this.props.val + 1
+    });
   },
 
-  unmount: function() {
-    React.unmountComponentAtNode(document.getElementById('target'));
-  }
-
-
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log(prevProps.val);
+  },
 });
 
-React.render(<App />, document.body);
+React.render(<Button val={0} />, document.body);
