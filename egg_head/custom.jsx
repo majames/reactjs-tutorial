@@ -1,60 +1,74 @@
-var App = React.createClass({
+
+var NumInput = React.createClass({
+  propTypes: {
+    type: React.PropTypes.oneOf(['number', 'range']),
+    val: React.PropTypes.number,
+    min: React.PropTypes.number,
+    max: React.PropTypes.number,
+    step: React.PropTypes.number,
+    contents: React.PropTypes.string,
+    update: React.PropTypes.func.isRequired
+  },
+
+  getDefaultProps: function() {
+    return {
+      type: 'range',
+      val: 0,
+      min: 0,
+      max: 0,
+      step: 0.5,
+      contents: 'default label'
+    };
+  },
 
   render: function() {
     return (
       <div>
-        <Button txt="I am a button" />
+        <label>{this.props.contents} - {this.props.val}</label>
         <br />
-        <Label txt="I am a label" />
+        <input
+          ref="inp"
+          type={this.props.type}
+          min={this.props.min}
+          max={this.props.max}
+          step={this.props.step}
+          defaultValue={this.props.val}
+          onChange={this.props.update} >
+        </input>
       </div>
     );
   }
 
 });
 
-var Mixin = {
-  componentWillMount: function() {
-    console.log('mounting...');
-  },
+
+var App = React.createClass({
 
   getInitialState: function() {
     return {
-      increment: 0
+      val: 125
     };
   },
 
-  updateIncrement: function() {
-    this.setState({
-      increment: this.state.increment + 1
-    });
-  }
-};
-
-var Button = React.createClass({
-  mixins: [Mixin],
-
   render: function() {
     return (
-      <button onClick={this.updateIncrement}>{this.props.txt} - {this.state.increment}</button>
-    );
-  }
-
-});
-
-var Label = React.createClass({
-  mixins: [Mixin],
-
-  render: function() {
-    return (
-      <label>{this.props.txt} - {this.state.increment}</label>
+      <NumInput
+        ref="num"
+        max={255}
+        update={this.update}
+        val={this.state.val}
+        step={5}
+        type="number"
+      />
     );
   },
 
-  componentWillMount: function() {
-    setInterval(this.updateIncrement, 1000);
+  update: function() {
+    this.setState({
+      val: Number(React.findDOMNode(this.refs.num.refs.inp).value)
+    });
   }
 
 });
-
 
 React.render(<App />, document.body);
