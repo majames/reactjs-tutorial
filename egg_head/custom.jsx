@@ -1,74 +1,40 @@
-
-var NumInput = React.createClass({
-  propTypes: {
-    type: React.PropTypes.oneOf(['number', 'range']),
-    val: React.PropTypes.number,
-    min: React.PropTypes.number,
-    max: React.PropTypes.number,
-    step: React.PropTypes.number,
-    contents: React.PropTypes.string,
-    update: React.PropTypes.func.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      type: 'range',
-      val: 0,
-      min: 0,
-      max: 0,
-      step: 0.5,
-      contents: 'default label'
-    };
-  },
-
-  render: function() {
-    return (
-      <div>
-        <label>{this.props.contents} - {this.props.val}</label>
-        <br />
-        <input
-          ref="inp"
-          type={this.props.type}
-          min={this.props.min}
-          max={this.props.max}
-          step={this.props.step}
-          defaultValue={this.props.val}
-          onChange={this.props.update} >
-        </input>
-      </div>
-    );
-  }
-
-});
-
-
-var App = React.createClass({
+var PersonTable = React.createClass({
 
   getInitialState: function() {
     return {
-      val: 125
+      data: [
+        { id: 1, fname: 'Michael', lname: 'James' },
+        { id: 2, fname: 'Annika', lname: 'James' },
+        { id: 3, fname: 'Andrew', lname: 'James' },
+        { id: 4, fname: 'Haimish', lname: 'James' },
+      ]
     };
   },
 
   render: function() {
-    return (
-      <NumInput
-        ref="num"
-        max={255}
-        update={this.update}
-        val={this.state.val}
-        step={5}
-        type="number"
-      />
-    );
-  },
-
-  update: function() {
-    this.setState({
-      val: Number(React.findDOMNode(this.refs.num.refs.inp).value)
+    var rows = this.state.data.map(function(value, index) {
+      return <PersonRow data={value} key={value.id} />;
     });
+
+    return (
+      <table>{rows}</table>
+    );
   }
 
 });
 
-React.render(<App />, document.body);
+var PersonRow = React.createClass({
+
+  render: function() {
+    return (
+      <tr>
+        <td>{this.props.data.id}</td>
+        <td>{this.props.data.fname}</td>
+        <td>{this.props.data.lname}</td>
+      </tr>
+    );
+  }
+
+});
+
+React.render(<PersonTable />, document.body);
