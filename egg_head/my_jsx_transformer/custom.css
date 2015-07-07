@@ -1,0 +1,7 @@
+textarea.code-input, .code-output {
+  height: 500px;
+}
+
+.error-msg {
+  height: 40px;
+}
