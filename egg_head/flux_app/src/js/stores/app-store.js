@@ -30,7 +30,7 @@ var cartItems = [];
 
 var removeItem = function(index) {
   cartItems[index].inCart = false;
-  cartItems[index].splice(index, 1);
+  cartItems.splice(index, 1);
 };
 
 var increaseItem = function(index) {
@@ -89,7 +89,7 @@ var AppStore = assign(EventEmitter.prototype, {
   },
 
   getCart: function() {
-    return cart;
+    return cartItems;
   },
 
   getCatalog: function() {
@@ -102,6 +102,7 @@ var AppStore = assign(EventEmitter.prototype, {
 
   dispatcherIndex: AppDispatcher.register(function(payload) {
     var action = payload.action;
+
     switch (action.actionType) {
       case AppConstants.ADD_ITEM:
         addItem(payload.action.item);
