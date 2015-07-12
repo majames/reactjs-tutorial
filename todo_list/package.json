@@ -2,17 +2,18 @@
   "name": "todo-list",
   "version": "0.0.0",
   "description": "First experience with webpack and further flux architecture and react.js experience",
-
-  "contributors": [{
+  "contributors": [
+    {
       "name": "Michael James",
       "email": "majames91@gmail.com"
-    }],
-
+    }
+  ],
   "main": "src/main.js",
-
   "devDependencies": {
-
+    "react": ">=0.13",
+    "node-libs-browser": "~0.5.2",
+    "webpack": "~1.10.1",
+    "react-dispatcher": "~0.2.1"
   },
-
   "analyze": true
 }
