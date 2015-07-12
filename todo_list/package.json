@@ -1,0 +1,18 @@
+{
+  "name": "todo-list",
+  "version": "0.0.0",
+  "description": "First experience with webpack and further flux architecture and react.js experience",
+
+  "contributors": [{
+      "name": "Michael James",
+      "email": "majames91@gmail.com"
+    }],
+
+  "main": "src/main.js",
+
+  "devDependencies": {
+
+  },
+
+  "analyze": true
+}
