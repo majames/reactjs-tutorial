@@ -49,7 +49,7 @@
 	var React = __webpack_require__(1);
 	var App = __webpack_require__(157);
 	
-	__webpack_require__(159);
+	__webpack_require__(160);
 	
 	React.render(React.createElement(App, null), document.getElementById('main'));
 
@@ -20436,20 +20436,13 @@
 	
 	var React = __webpack_require__(1);
 	
-	var Item = __webpack_require__(158);
-	var ToDoCreator = __webpack_require__(163);
+	var ToDoCreator = __webpack_require__(158);
+	var ToDoList = __webpack_require__(159);
 	
 	var App = React.createClass({
 	  displayName: 'App',
 	
 	  render: function render() {
-	    var i,
-	        items = [];
-	
-	    for (i = 0; i < 7; i++) {
-	      items.push(React.createElement(Item, null));
-	    }
-	
 	    return React.createElement(
 	      'section',
 	      { className: 'container' },
@@ -20462,11 +20455,7 @@
 	          'To Do List'
 	        ),
 	        React.createElement(ToDoCreator, null),
-	        React.createElement(
-	          'ul',
-	          { className: 'list-unstyled' },
-	          items
-	        )
+	        React.createElement(ToDoList, null)
 	      )
 	    );
 	  }
@@ -20482,36 +20471,72 @@
 	
 	var React = __webpack_require__(1);
 	
-	var Item = React.createClass({
-	  displayName: "Item",
+	var ToDoCreator = React.createClass({
+	  displayName: "ToDoCreator",
 	
 	  render: function render() {
 	    return React.createElement(
-	      "li",
-	      { className: "row item-row" },
+	      "section",
+	      { className: "row" },
+	      React.createElement("input", { type: "text", placeholder: "Enter new todo", className: " col-xs-7 col-xs-offset-1 todocreator-input" }),
 	      React.createElement(
-	        "h4",
-	        { className: "col-xs-8 col-xs-offset-1" },
-	        "Item Name"
-	      ),
-	      React.createElement("div", { className: "col-xs-1 col-xs-offset-1 glyphicon glyphicon-remove item-glyphicon" })
+	        "button",
+	        { type: "submit", className: "btn btn-default col-xs-2 col-xs-offset-1" },
+	        "Add TODO"
+	      )
 	    );
 	  }
 	});
 	
-	module.exports = Item;
+	module.exports = ToDoCreator;
 
 /***/ },
 /* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var ToDo = __webpack_require__(164);
+	
+	var ToDoList = React.createClass({
+	  displayName: 'ToDoList',
+	
+	  getInitialState: function getInitialState() {
+	    var i,
+	        todos = [];
+	
+	    for (i = 0; i < 7; i++) {
+	      todos.push(React.createElement(ToDo, { key: i }));
+	    }
+	
+	    return {
+	      todos: todos
+	    };
+	  },
+	
+	  render: function render() {
+	    return React.createElement(
+	      'ul',
+	      { className: 'list-unstyled' },
+	      this.state.todos
+	    );
+	  }
+	});
+	
+	module.exports = ToDoList;
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(160);
+	var content = __webpack_require__(161);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(162)(content, {});
+	var update = __webpack_require__(163)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -20528,10 +20553,10 @@
 	}
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(161)();
+	exports = module.exports = __webpack_require__(162)();
 	// imports
 	
 	
@@ -20542,7 +20567,7 @@
 
 
 /***/ },
-/* 161 */
+/* 162 */
 /***/ function(module, exports) {
 
 	/*
@@ -20598,7 +20623,7 @@
 
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20823,31 +20848,31 @@
 
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var React = __webpack_require__(1);
 	
-	var ToDoCreator = React.createClass({
-	  displayName: "ToDoCreator",
+	var ToDo = React.createClass({
+	  displayName: "ToDo",
 	
 	  render: function render() {
 	    return React.createElement(
-	      "section",
-	      { className: "row" },
-	      React.createElement("input", { type: "text", placeholder: "Enter new todo", className: " col-xs-7 col-xs-offset-1 todocreator-input" }),
+	      "li",
+	      { className: "row item-row" },
 	      React.createElement(
-	        "button",
-	        { type: "submit", className: "btn btn-default col-xs-2 col-xs-offset-1" },
-	        "Add TODO"
-	      )
+	        "h4",
+	        { className: "col-xs-8 col-xs-offset-1" },
+	        "ToDo Name"
+	      ),
+	      React.createElement("div", { className: "col-xs-1 col-xs-offset-1 glyphicon glyphicon-remove item-glyphicon" })
 	    );
 	  }
 	});
 	
-	module.exports = ToDoCreator;
+	module.exports = ToDo;
 
 /***/ }
 /******/ ]);
