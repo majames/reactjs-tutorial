@@ -20,7 +20,9 @@
     "less": "~2.5.1",
     "less-loader": "~2.2.0",
     "style-loader": "~0.12.3",
-    "css-loader": "~0.15.4"
+    "css-loader": "~0.15.4",
+    "lodash": "~3.10.0",
+    "flux": "~2.0.3"
   },
   "analyze": true
 }

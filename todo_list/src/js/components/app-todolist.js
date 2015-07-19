@@ -1,17 +1,24 @@
 var React = require('react');
+var AppStore = require('../stores/app-store.js');
 var ToDo = require('./app-todo.js');
 
 var ToDoList = React.createClass({
   getInitialState: function() {
-    var i, todos = [];
-
-    for (i = 0; i < 7; i++) {
-      todos.push(<ToDo key={i} />);
-    }
-
     return {
-      todos: todos
+      todos: []
     };
+  },
+
+  componentWillMount: function() {
+    AppStore.addChangeListener(this.onChange);
+  },
+
+  onChange: function() {
+    this.setState({
+      todos: AppStore.getToDos().map(function(todo, i) {
+        return <ToDo contents={todo.contents} key={i} id={i} />;
+      })
+    });
   },
 
   render: function() {
