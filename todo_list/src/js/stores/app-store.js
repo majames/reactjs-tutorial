@@ -11,13 +11,17 @@ var todos = [];
 var addToDo = function(contents) {
   todos.push({
     contents: contents,
-    index: todos.length
   });
 };
 
 var removeToDo = function(index) {
   todos.splice(index, 1);
-}
+};
+
+var moveToDo = function(oldIndex, newIndex) {
+  var todoToMove = todos.splice(oldIndex, 1)[0];
+  todos.splice(newIndex, 0, todoToMove);
+};
 
 var AppStore = _.assign(EventEmitter.prototype, {
   emitChange: function() {
@@ -41,6 +45,9 @@ var AppStore = _.assign(EventEmitter.prototype, {
         break;
       case AppConstants.REMOVE_TODO:
         removeToDo(action.index);
+        break;
+      case AppConstants.DROP_TODO:
+        moveToDo(action.oldIndex, action.newIndex);
         break;
     }
 

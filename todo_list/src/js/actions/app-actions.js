@@ -13,6 +13,13 @@ var AppActions = {
       actionType: AppConstants.REMOVE_TODO,
       index: index
     });
+  },
+  dropToDo: function(oldIndex, newIndex) {
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.DROP_TODO,
+      oldIndex: oldIndex,
+      newIndex: newIndex
+    });
   }
 };
 

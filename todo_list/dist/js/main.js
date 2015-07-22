@@ -20517,6 +20517,13 @@
 	      actionType: AppConstants.REMOVE_TODO,
 	      index: index
 	    });
+	  },
+	  dropToDo: function dropToDo(oldIndex, newIndex) {
+	    AppDispatcher.handleViewAction({
+	      actionType: AppConstants.DROP_TODO,
+	      oldIndex: oldIndex,
+	      newIndex: newIndex
+	    });
 	  }
 	};
 	
@@ -20530,7 +20537,8 @@
 	
 	module.exports = {
 	  ADD_TODO: 'ADD_TODO',
-	  REMOVE_TODO: 'REMOVE_TODO'
+	  REMOVE_TODO: 'REMOVE_TODO',
+	  DROP_TODO: 'DROP_TODO'
 	};
 
 /***/ },
@@ -33318,13 +33326,17 @@
 	
 	var addToDo = function addToDo(contents) {
 	  todos.push({
-	    contents: contents,
-	    index: todos.length
+	    contents: contents
 	  });
 	};
 	
 	var removeToDo = function removeToDo(index) {
 	  todos.splice(index, 1);
+	};
+	
+	var moveToDo = function moveToDo(oldIndex, newIndex) {
+	  var todoToMove = todos.splice(oldIndex, 1)[0];
+	  todos.splice(newIndex, 0, todoToMove);
 	};
 	
 	var AppStore = _.assign(EventEmitter.prototype, {
@@ -33349,6 +33361,9 @@
 	        break;
 	      case AppConstants.REMOVE_TODO:
 	        removeToDo(action.index);
+	        break;
+	      case AppConstants.DROP_TODO:
+	        moveToDo(action.oldIndex, action.newIndex);
 	        break;
 	    }
 	
@@ -33679,20 +33694,32 @@
 	var ToDo = React.createClass({
 	  displayName: 'ToDo',
 	
-	  handle: function handle() {
+	  removeToDo: function removeToDo() {
 	    AppActions.removeToDo(this.props.id);
+	  },
+	
+	  toDoDrop: function toDoDrop(evt) {
+	    AppActions.dropToDo(Number.parseInt(evt.dataTransfer.getData('key')), this.props.id);
+	  },
+	
+	  toDoDragOver: function toDoDragOver(evt) {
+	    evt.preventDefault();
+	  },
+	
+	  toDoDragStart: function toDoDragStart(evt) {
+	    evt.dataTransfer.setData('key', this.props.id);
 	  },
 	
 	  render: function render() {
 	    return React.createElement(
 	      'li',
-	      { className: 'row todo-row' },
+	      { className: 'row todo-row', draggable: 'true', onDrop: this.toDoDrop, onDragOver: this.toDoDragOver, onDragStart: this.toDoDragStart },
 	      React.createElement(
 	        'h4',
 	        { className: 'col-xs-8 col-xs-offset-1 todo-contents' },
 	        this.props.contents
 	      ),
-	      React.createElement('div', { onClick: this.handle, className: 'col-xs-1 col-xs-offset-1 glyphicon glyphicon-remove todo-glyphicon' })
+	      React.createElement('div', { onClick: this.removeToDo, className: 'col-xs-1 col-xs-offset-1 glyphicon glyphicon-remove todo-glyphicon' })
 	    );
 	  }
 	});
