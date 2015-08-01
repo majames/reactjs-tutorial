@@ -6,7 +6,7 @@ var Location = Router.Location;
 var Catalog = require('./catalog/app-catalog');
 var Cart = require('./cart/app-cart');
 var Template = require('./app-template');
-var CatalogDetail = require('./catalog/app-catalogitem');
+var CatalogDetail = require('./product/app-catalogdetail');
 
 var App = React.createClass({
   render: function() {

@@ -65,7 +65,7 @@ var cartTotals = function() {
 
   cartItems.forEach(function(cartItem) {
     totalQuantity += cartItem.quantity;
-    totalCost += cartItem.cost;
+    totalCost += cartItem.cost * cartItem.quantity;
   });
 
   return {

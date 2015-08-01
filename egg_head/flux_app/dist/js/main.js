@@ -22432,7 +22432,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/app-constants.js":201,"../dispatchers/app-dispatcher.js":202}],190:[function(require,module,exports){
+},{"../constants/app-constants.js":202,"../dispatchers/app-dispatcher.js":203}],190:[function(require,module,exports){
 var React = require('react');
 
 var Header = require('./header/app-header');
@@ -22459,7 +22459,7 @@ var Location = Router.Location;
 var Catalog = require('./catalog/app-catalog');
 var Cart = require('./cart/app-cart');
 var Template = require('./app-template');
-var CatalogDetail = require('./catalog/app-catalogitem');
+var CatalogDetail = require('./product/app-catalogdetail');
 
 var App = React.createClass({displayName: "App",
   render: function() {
@@ -22478,29 +22478,25 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./app-template":190,"./cart/app-cart":192,"./catalog/app-catalog":197,"./catalog/app-catalogitem":198,"react":188,"react-router-component":8}],192:[function(require,module,exports){
+},{"./app-template":190,"./cart/app-cart":192,"./catalog/app-catalog":197,"./product/app-catalogdetail":201,"react":188,"react-router-component":8}],192:[function(require,module,exports){
 var React = require('react');
+var Link = require('react-router-component').Link;
+
 var AppStore = require('../../stores/app-store');
 var RemoveFromCart = require('./app-removefromcart');
 var IncreaseItem = require('./app-increaseitem');
 var DecreaseItem = require('./app-decreaseitem');
 
+var StoreWatchMixin = require('../../mixins/StoreWatchMixin.js');
+
+var getCartItems = function() {
+  return {
+    cartItems: AppStore.getCart()
+  };
+};
+
 var AppCart = React.createClass({displayName: "AppCart",
-  getInitialState: function() {
-    return {
-      cartItems: AppStore.getCart()
-    };
-  },
-
-  componentWillMount: function() {
-    AppStore.addChangeListener(this._onChange);
-  },
-
-  _onChange: function() {
-    this.setState({
-      cartItems: AppStore.getCart()
-    });
-  },
+  mixins: [StoreWatchMixin(getCartItems)],
 
   render: function() {
     var total = 0;
@@ -22523,25 +22519,28 @@ var AppCart = React.createClass({displayName: "AppCart",
     });
 
     return (
-      React.createElement("table", {className: "table table-hover"}, 
-        React.createElement("thead", null, 
-          React.createElement("th", null), 
-          React.createElement("th", null, "Item"), 
-          React.createElement("th", null, "Quantity"), 
-          React.createElement("th", null), 
-          React.createElement("th", null, "Subtotal")
-        ), 
+      React.createElement("div", null, 
+        React.createElement("table", {className: "table table-hover"}, 
+          React.createElement("thead", null, 
+            React.createElement("th", null), 
+            React.createElement("th", null, "Item"), 
+            React.createElement("th", null, "Quantity"), 
+            React.createElement("th", null), 
+            React.createElement("th", null, "Subtotal")
+          ), 
 
-        React.createElement("tbody", null, 
-          items
-        ), 
+          React.createElement("tbody", null, 
+            items
+          ), 
 
-        React.createElement("tfoot", null, 
-          React.createElement("tr", null, 
-            React.createElement("td", {colSpan: "4", className: "text-right"}, "Total"), 
-            React.createElement("td", null, "$", total)
+          React.createElement("tfoot", null, 
+            React.createElement("tr", null, 
+              React.createElement("td", {colSpan: "4", className: "text-right"}, "Total"), 
+              React.createElement("td", null, "$", total)
+            )
           )
-        )
+        ), 
+        React.createElement(Link, {href: "/"}, "Continue Shopping")
       )
     );
   }
@@ -22550,7 +22549,7 @@ var AppCart = React.createClass({displayName: "AppCart",
 
 module.exports = AppCart;
 
-},{"../../stores/app-store":204,"./app-decreaseitem":193,"./app-increaseitem":194,"./app-removefromcart":195,"react":188}],193:[function(require,module,exports){
+},{"../../mixins/StoreWatchMixin.js":205,"../../stores/app-store":206,"./app-decreaseitem":193,"./app-increaseitem":194,"./app-removefromcart":195,"react":188,"react-router-component":8}],193:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../../actions/app-actions');
 
@@ -22617,7 +22616,7 @@ var AddToCart = React.createClass({displayName: "AddToCart",
 
   render: function() {
     return (
-      React.createElement("button", {onClick: this.handler}, "Add To Cart")
+      React.createElement("button", {className: "btn btn-default", onClick: this.handler}, "Add To Cart")
     );
   }
 
@@ -22627,33 +22626,31 @@ module.exports = AddToCart;
 
 },{"../../actions/app-actions.js":189,"react":188}],197:[function(require,module,exports){
 var React = require('react');
+
 var AppStore = require('../../stores/app-store');
-var AddToCart = require('./app-addtocart');
+var AddToCart = require('./app-addtocart.js');
+var CatalogItem = require('./app-catalogitem.js');
+
+var StoreWatchMixin = require('../../mixins/StoreWatchMixin.js');
 
 var getCatalog = function() {
-  return AppStore.getCatalog();
+  return {
+    items: AppStore.getCatalog()
+  };
 };
 
 var Catalog = React.createClass({displayName: "Catalog",
-  getInitialState: function() {
-    return {
-      items: getCatalog()
-    };
-  },
+  mixins: [StoreWatchMixin(getCatalog)],
 
   render: function() {
     var items = this.state.items.map(function(item) {
       return (
-        React.createElement("tr", {key: item.id}, 
-          React.createElement("td", null, item.title), 
-          React.createElement("td", null, "$", item.cost), 
-          React.createElement("td", null, React.createElement(AddToCart, {item: item}))
-        )
+        React.createElement(CatalogItem, {item: item, key: item.id})
       );
     });
 
     return (
-      React.createElement("table", {className: "table table-hover"}, 
+      React.createElement("div", {className: "row"}, 
         items
       )
     );
@@ -22663,27 +22660,65 @@ var Catalog = React.createClass({displayName: "Catalog",
 
 module.exports = Catalog;
 
-},{"../../stores/app-store":204,"./app-addtocart":196,"react":188}],198:[function(require,module,exports){
+},{"../../mixins/StoreWatchMixin.js":205,"../../stores/app-store":206,"./app-addtocart.js":196,"./app-catalogitem.js":198,"react":188}],198:[function(require,module,exports){
 var React = require('react');
+var Link = require('react-router-component').Link;
+
+var AddToCart = require('./app-addtocart');
 
 var CatalogItem = React.createClass({displayName: "CatalogItem",
   render: function() {
-    return null;
+    var itemStyle = {
+      borderBottom: '1px solid #ccc',
+      paddingBottom: '15px'
+    };
+
+    return (
+      React.createElement("div", {className: "col-sm-3", style: itemStyle}, 
+        React.createElement("h4", null, this.props.item.title), 
+        React.createElement("img", {src: this.props.item.img, alt: "#"}), 
+
+        React.createElement("p", null, this.props.item.summary), 
+        React.createElement("p", null, 
+          "$", this.props.item.cost, 
+          React.createElement("span", {className: "text-success"}, 
+            this.props.item.inCart && ' (' + this.props.item.quantity + ' in cart)'
+          )
+        ), 
+
+        React.createElement("div", {className: "btn-group btn-group-xs"}, 
+          React.createElement(Link, {href: '/item/' + this.props.item.id, className: "btn btn-default"}, 
+            "Learn More"
+          ), 
+          React.createElement(AddToCart, {item: this.props.item})
+        )
+      )
+    );
   }
 });
 
 module.exports = CatalogItem;
 
-},{"react":188}],199:[function(require,module,exports){
+},{"./app-addtocart":196,"react":188,"react-router-component":8}],199:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router-component').Link;
 
+var AppStore = require('../../stores/app-store.js');
+
+var StoreWatchMixin = require('../../mixins/StoreWatchMixin.js');
+
+var cartTotals = function() {
+  return AppStore.getCartTotals();
+};
+
 var CartSummary = React.createClass({displayName: "CartSummary",
+  mixins: [StoreWatchMixin(cartTotals)],
+
   render: function () {
     return (
       React.createElement("div", null, 
         React.createElement(Link, {href: "/cart", className: "btn btn-success"}, 
-          "Cart Items: QTY / $COST"
+          "Cart Items: ", this.state.totalQuantity, " / $", this.state.totalCost
         )
       )
     );
@@ -22692,7 +22727,7 @@ var CartSummary = React.createClass({displayName: "CartSummary",
 
 module.exports = CartSummary;
 
-},{"react":188,"react-router-component":8}],200:[function(require,module,exports){
+},{"../../mixins/StoreWatchMixin.js":205,"../../stores/app-store.js":206,"react":188,"react-router-component":8}],200:[function(require,module,exports){
 var React = require('react');
 var CartSummary = require('./app-cartsummary');
 
@@ -22715,6 +22750,56 @@ var CartHeader = React.createClass({displayName: "CartHeader",
 module.exports = CartHeader;
 
 },{"./app-cartsummary":199,"react":188}],201:[function(require,module,exports){
+var React = require('react');
+var Link = require('react-router-component').Link;
+
+var AppStore = require('../../stores/app-store.js');
+var AddToCart = require('../catalog/app-addtocart.js');
+
+var StoreWatchMixin = require('../../mixins/StoreWatchMixin');
+
+var getCatalogItem = function(component) {
+  var thisItem = AppStore.getCatalog().filter(function(item) {
+    return item.id.toString() === component.props.item;
+  })[0];
+
+  return {
+    item: thisItem
+  };
+}
+
+var CatalogDetail = React.createClass({displayName: "CatalogDetail",
+  mixins: [StoreWatchMixin(getCatalogItem)],
+
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement("h2", null, 
+          this.state.item.title
+        ), 
+        React.createElement("img", {src: this.state.item.img, alt: "#"}), 
+
+        React.createElement("p", null, this.state.item.description), 
+        React.createElement("p", null, 
+          "$", this.state.item.cost, 
+          React.createElement("span", {className: "text-success"}, 
+            this.state.item.inCart && ' (' + this.state.item.quantity + ' in cart)'
+          )
+        ), 
+
+        React.createElement("div", {className: "btn-group btn-group-default"}, 
+          React.createElement(AddToCart, {item: this.state.item}), 
+          React.createElement(Link, {href: "/", className: "btn btn-default"}, "Continue Shopping")
+        )
+
+      )
+    );
+  }
+});
+
+module.exports = CatalogDetail;
+
+},{"../../mixins/StoreWatchMixin":205,"../../stores/app-store.js":206,"../catalog/app-addtocart.js":196,"react":188,"react-router-component":8}],202:[function(require,module,exports){
 module.exports = {
   ADD_ITEM: 'ADD_ITEM',
   REMOVE_ITEM: 'REMOVE_ITEM',
@@ -22722,7 +22807,7 @@ module.exports = {
   DECREASE_ITEM: 'DECREASE_ITEM'
 };
 
-},{}],202:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 var assign = require('react/lib/Object.assign');
 
@@ -22737,13 +22822,38 @@ var AppDispatcher = assign(new Dispatcher(), {
 
 module.exports = AppDispatcher;
 
-},{"flux":3,"react/lib/Object.assign":56}],203:[function(require,module,exports){
+},{"flux":3,"react/lib/Object.assign":56}],204:[function(require,module,exports){
 var App = require('./components/app');
 var React = require('react');
 
 React.render(React.createElement(App, null), document.getElementById('main'));
 
-},{"./components/app":191,"react":188}],204:[function(require,module,exports){
+},{"./components/app":191,"react":188}],205:[function(require,module,exports){
+var AppStore = require('../stores/app-store');
+
+var StoreWatchMixin = function(callbackFn) {
+  return {
+    getInitialState: function() {
+      return callbackFn(this);
+    },
+
+    componentWillMount: function() {
+      AppStore.addChangeListener(this._onChange);
+    },
+
+    componentWillUnmount: function() {
+      AppStore.removeChangeListener(this._onChange);
+    },
+
+    _onChange: function() {
+      this.setState(callbackFn(this));
+    }
+  };
+};
+
+module.exports = StoreWatchMixin;
+
+},{"../stores/app-store":206}],206:[function(require,module,exports){
 var AppDispatcher = require('../dispatchers/app-dispatcher');
 var AppConstants = require('../constants/app-constants');
 var assign = require('react/lib/Object.assign');
@@ -22811,7 +22921,7 @@ var cartTotals = function() {
 
   cartItems.forEach(function(cartItem) {
     totalQuantity += cartItem.quantity;
-    totalCost += cartItem.cost;
+    totalCost += cartItem.cost * cartItem.quantity;
   });
 
   return {
@@ -22872,4 +22982,4 @@ var AppStore = assign(EventEmitter.prototype, {
 
 module.exports = AppStore;
 
-},{"../constants/app-constants":201,"../dispatchers/app-dispatcher":202,"events":1,"react/lib/Object.assign":56}]},{},[203]);
+},{"../constants/app-constants":202,"../dispatchers/app-dispatcher":203,"events":1,"react/lib/Object.assign":56}]},{},[204]);
