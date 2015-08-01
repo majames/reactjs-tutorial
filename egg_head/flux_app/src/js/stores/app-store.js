@@ -21,7 +21,8 @@ var cartItems = [];
       title: 'Widget #' + i,
       summary: 'This is an awesome widget!',
       description: 'Lorem ipsum dolor sit amet',
-      cost: i
+      cost: i,
+      img: '/assets/product.png'
     });
   }
 })();

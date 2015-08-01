@@ -1,5 +1,5 @@
 React = require('react');
-AppActions = require('../actions/app-actions');
+AppActions = require('../../actions/app-actions');
 
 var IncreaseItem = React.createClass({
   handler: function() {
